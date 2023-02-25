@@ -18,7 +18,7 @@ export default createStore({
     },
     deleteMessage(state, id) {
       state.messageList = state.messageList.filter(message => message._id !== id)
-    }
+    },
   },
   actions: {
     async login({ commit }, { username, password }) {

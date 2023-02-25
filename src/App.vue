@@ -1,41 +1,81 @@
 <template>
   <div class="app">
-    <div class="main">
-      <router-view class="router-view"></router-view>
+    <div class="header">
+      <h1>留言板</h1>
     </div>
-    <div class="nav">
-      <el-menu router :default-active="$route.path">
-        <el-menu-item index="/">首页</el-menu-item>
-        <el-menu-item index="/login">登录</el-menu-item>
-        <el-menu-item index="/message-board">留言板</el-menu-item>
+    <div class="main">
+      <el-menu :collapse="isCollapse" :mode="menuMode" style="width: 100vw">
+        <el-menu-item index="/">
+          <router-link to="/message-board">留言板</router-link>
+        </el-menu-item>
+        <el-menu-item index="/login">
+          <router-link to="/login">登录</router-link>
+        </el-menu-item>
       </el-menu>
+      <div style="width: 100%; height: 300px">
+        <router-view class="router-view"></router-view>
+      </div>
     </div>
   </div>
 </template>
 
+<script>
+export default {
+  name: "App",
+  data() {
+    return {
+      isCollapse: true,
+      menuMode: "horizontal",
+    };
+  },
+  created() {
+    window.addEventListener("resize", this.handleResize);
+    this.handleResize();
+  },
+  methods: {
+    handleResize() {
+      if (window.innerWidth <= 768) {
+        this.isCollapse = true;
+        this.menuMode = "vertical";
+      } else {
+        this.isCollapse = false;
+        this.menuMode = "horizontal";
+      }
+    },
+  },
+};
+</script>
+
 <style>
+
 .app {
-  height: 100vh;
-  display: flex;
+  height: 100%;
+  /* display: flex; */
   flex-direction: column;
+  margin: 0 auto;
+}
+
+.header {
+  background-color: #409eff;
+  padding: 20px;
+  text-align: center;
+}
+
+.header h1 {
+  margin: 0;
+  color: #fff;
+  font-size: 24px;
 }
 
 .main {
   flex: 1;
-  overflow-y: auto;
+  /* display: flex; */
+  height: 100%;
 }
 
-.nav {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color: #f5f5f5;
-  box-shadow: 0px -1px 2px rgba(0, 0, 0, 0.2);
-}
-
-.router-view {
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
+@media screen and (max-width: 768px) {
+  .main {
+    flex-direction: column;
+  }
 }
 </style>

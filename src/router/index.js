@@ -5,21 +5,21 @@ import MessageBoard from '../views/MessageBoard.vue'
 
 const routes = [
   {
-    path: '/',
-    name: 'Welcome',
-    component: Welcome
+    path: "/",
+    name: "Welcome",
+    component: MessageBoard,
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: Login
+    path: "/login",
+    name: "Login",
+    component: Login,
   },
   {
-    path: '/message-board',
-    name: 'MessageBoard',
-    component: MessageBoard
-  }
-]
+    path: "/message-board",
+    name: "MessageBoard",
+    component: MessageBoard,
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
