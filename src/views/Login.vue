@@ -36,11 +36,11 @@ import { useStorage } from "@vueuse/core";
 export default {
   name: "Login",
   setup() {
-    const user = useStorage("user", null);
+    const user = useStorage("user");
     //当前组件可见的时候，如果localStorage中有user，就直接跳转到首页
     onMounted(() => {
-      if (user.value) {
-        console.log("已登录", user);
+      if (user.value!=="undefined") {
+        console.log("已登录", user.value);
         router.push("/");
       }
     });

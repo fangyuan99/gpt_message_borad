@@ -49,15 +49,14 @@ export default {
 
     onMounted(() => {
       handleResize();
-      if (user.value) {
+      if (user.value!=="undefined") {
         isLoggedIn.value = true;
       }
       window.addEventListener("resize", handleResize);
     });
 
     const logout = () => {
-      user.value = null;
-      store.commit("setUser", null);
+      user.value="undefined";
       isLoggedIn.value = false;
       router.push("/");
       // 刷新页面
@@ -66,7 +65,6 @@ export default {
 
     const logInOrOut = () => {
       if (isLoggedIn.value) {
-        console.log("logout");
         logout();
       } else {
         router.push("/login");
