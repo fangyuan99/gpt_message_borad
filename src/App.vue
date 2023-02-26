@@ -8,8 +8,8 @@
         <el-menu-item index="/">
           <router-link to="/message-board">留言板</router-link>
         </el-menu-item>
-        <el-menu-item index="/login">
-          <router-link to="/login">登录</router-link>
+        <el-menu-item index="/login" @click="logInOrOut">
+          {{ isLoggedIn ? "退出登录" : "登录" }}
         </el-menu-item>
       </el-menu>
       <div style="width: 100%; height: 300px">
@@ -20,34 +20,71 @@
 </template>
 
 <script>
+import { ref, watchEffect, onMounted, computed } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import { useStorage } from '@vueuse/core'
+
+
 export default {
   name: "App",
-  data() {
-    return {
-      isCollapse: true,
-      menuMode: "horizontal",
-    };
-  },
-  created() {
-    window.addEventListener("resize", this.handleResize);
-    this.handleResize();
-  },
-  methods: {
-    handleResize() {
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+    const isCollapse = ref(true);
+    const menuMode = ref("horizontal");
+
+    const isLoggedIn = ref(false);
+
+    const handleResize = () => {
       if (window.innerWidth <= 768) {
-        this.isCollapse = true;
-        this.menuMode = "vertical";
+        isCollapse.value = true;
+        menuMode.value = "vertical";
       } else {
-        this.isCollapse = false;
-        this.menuMode = "horizontal";
+        isCollapse.value = false;
+        menuMode.value = "horizontal";
       }
-    },
+    };
+      const user = useStorage("user");
+
+    onMounted(() => {
+      handleResize();
+      if (user.value) {
+        isLoggedIn.value = true;
+      }
+      window.addEventListener("resize", handleResize);
+    });
+
+    const logout = () => {
+      user.value = null;
+      store.commit("setUser", null);
+      isLoggedIn.value = false;
+      router.push("/");
+      // 刷新页面
+      // window.location.reload();
+    };
+
+    const logInOrOut = () => {
+      if (isLoggedIn.value) {
+        console.log("logout");
+        logout();
+      } else {
+        router.push("/login");
+      }
+    };
+
+    return {
+      isCollapse,
+      menuMode,
+      isLoggedIn,
+      logout,
+      logInOrOut,
+    };
   },
 };
 </script>
 
 <style>
-
 .app {
   height: 100%;
   /* display: flex; */

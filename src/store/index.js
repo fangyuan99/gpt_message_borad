@@ -25,7 +25,6 @@ export default createStore({
       try {
         const response = await login(username, password)
         const { data } = response
-        commit('setUser', data.user)
         return data
       } catch (error) {
         return Promise.reject(error)

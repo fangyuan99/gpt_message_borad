@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-form
-      ref="loginForm"
+      ref="loginFormRef"
       :rules="rules"
       :model="loginForm"
       label-width="80px"
@@ -25,54 +25,68 @@
     </el-form>
   </div>
 </template>
-<script>
-import { mapMutations } from "vuex";
 
-import { login } from "../api";
+<script>
+import { onMounted } from "vue";
+import { useStore } from "vuex";
+import * as api from "../api";
+import router from "../router";
+import { useStorage } from "@vueuse/core";
 
 export default {
   name: "Login",
-  data() {
-    return {
-      loginForm: {
-        username: "",
-        password: "",
-      },
-      rules: {
-        username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
-        ],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-      },
+  setup() {
+    const user = useStorage("user", null);
+    //当前组件可见的时候，如果localStorage中有user，就直接跳转到首页
+    onMounted(() => {
+      if (user.value) {
+        console.log("已登录", user);
+        router.push("/");
+      }
+    });
+    const store = useStore();
+
+    const loginForm = {
+      username: "",
+      password: "",
     };
-  },
-  methods: {
-    ...mapMutations(["setUser"]),
-    async login() {
-      this.$refs.loginForm.validate(async (valid) => {
-        if (valid) {
-          try {
-            const { data } = await login(
-              this.loginForm.username,
-              this.loginForm.password
-            );
-            this.setUser({
-              username: this.loginForm.username,
-              password: this.loginForm.password,
-            });
-            this.$router.push("/");
-          } catch (error) {
-            console.log(error);
-            alert("登录失败，请检查用户名和密码");
-          }
-        } else {
-          return false;
-        }
-      });
-    },
+
+    const rules = {
+      username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+      password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+    };
+
+    const login = async () => {
+      try {
+        const { data } = await api.login(
+          loginForm.username,
+          loginForm.password
+        );
+        store.commit("setUser", {
+          username: loginForm.username,
+          password: loginForm.password,
+        });
+        user.value=  JSON.stringify({
+            username: loginForm.username,
+            password: loginForm.password,
+          })
+        router.push("/");
+        window.location.reload();
+      } catch (error) {
+        console.log(error);
+        alert("登录失败，请检查用户名和密码");
+      }
+    };
+
+    return {
+      loginForm,
+      rules,
+      login,
+    };
   },
 };
 </script>
+
 <style scoped>
 .login-container {
   display: flex;
@@ -104,5 +118,4 @@ export default {
   margin-top: 20px;
   border-radius: 5px;
 }
-
 </style>

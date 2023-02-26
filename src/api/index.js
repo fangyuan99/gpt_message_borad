@@ -2,7 +2,8 @@ import axios from "axios";
 
 // 创建 axios 实例
 const instance = axios.create({
-  baseURL: "http://127.0.0.1:5000/api",
+  //从环境变量中获取
+  baseURL: import.meta.env.VITE_BASE_URL,
   timeout: 10000,
 });
 
