@@ -2,11 +2,10 @@
   <div class="message-board-container">
     <Welcome :username="username" />
     <el-form ref="messageForm" :rules="rules" :model="messageForm">
-      <el-form-item prop="content" label="asdf">
+      <el-form-item prop="content">
         <el-input
           autosize
           type="textarea"
-          :row="4"
           v-model.trim="messageForm.content"
         ></el-input>
         <div class="buttons">
@@ -43,74 +42,75 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from "vue";
 import * as api from "../api";
 import Welcome from "./Welcome.vue";
-import { useStorage } from "@vueuse/core";
 
 export default {
   name: "MessageBoard",
   components: {
     Welcome,
   },
-  setup() {
-    const messageForm = ref({ content: "" });
-    const rules = ref({
-      content: [{ required: true, message: "请输入留言内容", trigger: "blur" }],
-    });
-    const messages = ref([]);
-    const username = computed(() => {
-      const user = useStorage("user");
-      // if(user?.value!==undefined) {
-      //   return JSON.parse(user.value).username;
-      // }
-      return "游客";
-    });
-
-    const getMessages = async () => {
+  data() {
+    return {
+      messageForm: {
+        content: "",
+      },
+      rules: {
+        content: [
+          { required: true, message: "请输入留言内容", trigger: "blur" },
+        ],
+      },
+      messages: [],
+      username: "",
+    };
+  },
+  async created() {
+    await this.getMessages();
+    // 从store中获取用户名
+    this.username = this.$store.state?.user?.username || "";
+  },
+  methods: {
+    async getMessages() {
       try {
         const { data } = await api.getMessageList();
-        messages.value = data;
+        this.messages = data;
       } catch (error) {
         // 获取留言失败后的逻辑
       }
-    };
-
-    const submitMessage = async () => {
-      const valid = true;
-      if (valid) {
-        try {
-          await api.addMessage(username.value, messageForm.value.content);
-          messageForm.value.content = "";
-          await getMessages();
-        } catch (error) {
-          // 发布留言失败后的逻辑
+    },
+    async submitMessage() {
+      this.$refs.messageForm.validate(async (valid) => {
+        if (valid) {
+          try {
+            await api.addMessage(this.username, this.messageForm.content);
+            this.messageForm.content = "";
+            await this.getMessages();
+          } catch (error) {
+            // 发布留言失败后的逻辑
+          }
+        } else {
+          return false;
         }
-      } else {
-        return false;
-      }
-    };
-
-    const deleteMessage = async (index) => {
-      const { _id } = messages.value[index];
+      });
+    },
+    async deleteMessage(index) {
+      const { _id } = this.messages[index];
       try {
         await api.deleteMessage(_id);
-        await getMessages();
+        await this.getMessages();
       } catch (error) {
         // 删除留言失败后的逻辑
       }
-    };
-
-    const refreshMessages = async () => {
-      await getMessages();
-    };
-
-    const logout = () => {
-      localStorage.removeItem("user");
-    };
-
+    },
+    async refreshMessages() {
+      await this.getMessages();
+    },
+    async logout() {
+      localStorage.removeItem("username");
+      this.username = "";
+    },
     //时间戳转换为日期
-    const formatDate = (time) => {
+    formatDate(time) {
       var date = new Date(time);
       var year = date.getFullYear();
       var month = date.getMonth() + 1;
@@ -131,25 +131,7 @@ export default {
         ":" +
         second
       );
-    };
-
-    onMounted(async () => {
-      await getMessages();
-      console.log("username", username);
-    });
-
-    return {
-      messageForm,
-      rules,
-      messages,
-      username,
-      getMessages,
-      submitMessage,
-      deleteMessage,
-      refreshMessages,
-      logout,
-      formatDate,
-    };
+    },
   },
 };
 </script>
