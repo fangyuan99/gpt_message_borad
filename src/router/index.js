@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Welcome from '../views/Welcome.vue'
 import Login from '../views/Login.vue'
 import MessageBoard from '../views/MessageBoard.vue'
+import About from '../views/About.vue'
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
     name: "MessageBoard",
     component: MessageBoard,
   },
+  {
+    path: "/about",
+    name: "About",
+    component: About,
+  }
 ];
 
 const router = createRouter({

@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { onMounted } from "vue";
+import { onMounted, reactive } from "vue";
 import { useStore } from "vuex";
 import * as api from "../api";
 import router from "../router";
@@ -39,17 +39,17 @@ export default {
     const user = useStorage("user");
     //当前组件可见的时候，如果localStorage中有user，就直接跳转到首页
     onMounted(() => {
-      if (user.value!=="undefined") {
+      if (user.value !== "undefined") {
         console.log("已登录", user.value);
         router.push("/");
       }
     });
     const store = useStore();
 
-    const loginForm = {
+    const loginForm = reactive({
       username: "",
       password: "",
-    };
+    });
 
     const rules = {
       username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
@@ -66,10 +66,10 @@ export default {
           username: loginForm.username,
           password: loginForm.password,
         });
-        user.value=  JSON.stringify({
-            username: loginForm.username,
-            password: loginForm.password,
-          })
+        user.value = JSON.stringify({
+          username: loginForm.username,
+          password: loginForm.password,
+        });
         router.push("/");
         window.location.reload();
       } catch (error) {

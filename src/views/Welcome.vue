@@ -1,6 +1,6 @@
 <template>
   <div class="welcome-container">
-    <span class="welcome-text">{{ username }}</span>
+    <span class="welcome-text">{{ username ? username : "游客" }}</span>
   </div>
 </template>
 
@@ -21,8 +21,9 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
-  margin-right: 50px;
   padding: 10px;
+  margin-right: 20px;
+  color:white
 }
 
 .welcome-text {

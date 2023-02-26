@@ -1,6 +1,5 @@
 <template>
   <div class="message-board-container">
-    <Welcome :username="username" />
     <el-form :rules="rules" :model="messageForm" ref="messageFormRef">
       <el-form-item prop="content">
         <el-input
@@ -10,13 +9,15 @@
           placeholder="请输入留言内容"
         />
       </el-form-item>
-      <el-form-item class="buttons">
-        <el-button type="primary" @click="getMessages" plain>
-          刷新留言
-        </el-button>
-        <el-button type="primary" @click="submitMessage" plain>
-          发布留言
-        </el-button>
+      <el-form-item>
+        <div class="message-delete" style="width: 100%">
+          <el-button type="primary" @click="getMessages" plain>
+            刷新留言
+          </el-button>
+          <el-button type="primary" @click="submitMessage" plain>
+            发布留言
+          </el-button>
+        </div>
       </el-form-item>
     </el-form>
     <div class="message-list">
@@ -45,14 +46,12 @@
 <script>
 import { ref, onMounted, computed, reactive } from "vue";
 import * as api from "../api";
-import Welcome from "./Welcome.vue";
 import { useStorage } from "@vueuse/core";
+import dayjs from "dayjs";
 
 export default {
   name: "MessageBoard",
-  components: {
-    Welcome,
-  },
+
   setup() {
     const messageForm = reactive({ content: "" });
     const messageFormRef = ref(null);
@@ -126,26 +125,7 @@ export default {
 
     //时间戳转换为日期
     const formatDate = (time) => {
-      var date = new Date(time);
-      var year = date.getFullYear();
-      var month = date.getMonth() + 1;
-      var day = date.getDate();
-      var hour = date.getHours();
-      var minute = date.getMinutes();
-      var second = date.getSeconds();
-      return (
-        year +
-        "-" +
-        month +
-        "-" +
-        day +
-        " " +
-        hour +
-        ":" +
-        minute +
-        ":" +
-        second
-      );
+      return dayjs(time).format("YYYY-MM-DD HH:mm:ss");
     };
 
     onMounted(async () => {
@@ -163,7 +143,7 @@ export default {
       refreshMessages,
       logout,
       formatDate,
-      messageFormRef
+      messageFormRef,
     };
   },
 };
