@@ -59,7 +59,7 @@ export default {
       window.addEventListener("resize", handleResize);
       document.querySelector("h1").addEventListener("click", () => {
         //跳转到首页
-        window.location.href = "/";
+        window.location.href = "./";
       });
     });
 

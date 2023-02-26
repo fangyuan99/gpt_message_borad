@@ -4,7 +4,7 @@ import axios from "axios";
 const instance = axios.create({
   //从环境变量中获取
   baseURL: import.meta.env.VITE_BASE_URL,
-  timeout: 10000,
+  timeout: 3000,
 });
 
 // 登录
@@ -26,3 +26,11 @@ export const addMessage = (username,content) => {
 export const deleteMessage = (_id) => {
   return instance.post("/delete_message",{_id});
 };
+
+// 获取README.md
+export const getReadme = () => {
+  const readme = axios.get(
+    "https://ghproxy.com/https://raw.githubusercontent.com/fangyuan99/gpt_message_borad/gpt1.1.0/README.md"
+  );
+  return readme;
+}

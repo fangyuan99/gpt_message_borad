@@ -1,8 +1,7 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Welcome from '../views/Welcome.vue'
-import Login from '../views/Login.vue'
-import MessageBoard from '../views/MessageBoard.vue'
-import About from '../views/About.vue'
+import { createRouter, createWebHashHistory } from "vue-router";
+import Login from "../views/Login.vue";
+import MessageBoard from "../views/MessageBoard.vue";
+import About from "../views/About.vue";
 
 const routes = [
   {
@@ -24,12 +23,13 @@ const routes = [
     path: "/about",
     name: "About",
     component: About,
-  }
+  },
 ];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes
-})
+  // 4. 内部提供了 history 模式的实现。为了简单起见，我们在这里使用 hash 模式。
+  history: createWebHashHistory(),
+  routes, // `routes: routes` 的缩写
+});
 
-export default router
+export default router;

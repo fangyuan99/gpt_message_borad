@@ -3,6 +3,7 @@
 </template>
 <script>
 import { marked } from "marked";
+import { getReadme } from "../api";
 import "github-markdown-css";
 export default {
   data() {
@@ -14,14 +15,9 @@ export default {
     this.getReadme();
   },
   methods: {
-    getReadme() {
-      // 发送 HTTP 请求获取 README.md 文件内容
-      fetch("/README.md")
-        .then((response) => response.text())
-        .then((markdown) => {
-          // 将 Markdown 转换为 HTML 并更新数据
-          this.markdown = marked(markdown);
-        });
+    async getReadme() {
+      const readme = await (await getReadme()).data;
+      this.markdown = marked(readme);
     },
   },
 };

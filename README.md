@@ -2,7 +2,7 @@
 
 > 这是一个使用ChatGPT构建的包含 `前后端+数据库` 的留言板项目，主要代码由 `ChatGPT` 完成，下面是GPT自动生成的项目大纲.
 
-> [完整版对话](/fullDialogue.md)
+> [完整版对话](https://github.com/fangyuan99/gpt_message_borad/blob/gpt1.1.0/fullDialogue.md)
 
 ## 大纲
 
