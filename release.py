@@ -33,7 +33,7 @@ def release():
 # main
 if __name__ == "__main__":
     # build
-    # exec_cmd("yarn build")
+    exec_cmd("yarn build")
     # 运行release
     release()
     

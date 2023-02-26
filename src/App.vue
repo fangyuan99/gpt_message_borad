@@ -1,13 +1,13 @@
 <template>
   <div class="app">
     <div class="header">
-      <h1>GPT留言板</h1>
+      <h1>ChatGPT留言板</h1>
       <Welcome :username="isLoggedIn ? JSON.parse(user).username : ''" />
     </div>
     <div class="main">
       <el-menu :collapse="isCollapse" :mode="menuMode" style="width: 100vw">
         <el-menu-item index="/" @click="goToMessageBoard">
-          GPT留言板
+          留言板
         </el-menu-item>
         <el-menu-item index="/login" @click="logInOrOut">
           {{ isLoggedIn ? "退出登录" : "登录" }}
